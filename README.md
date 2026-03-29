@@ -70,7 +70,7 @@ The dataset used for this project was taken from the kaggle repository :https://
 
 **Name:** Anamika Suresh
 
-**Title of ML project:** Interview Assistant: A Facial Emotion Detection Project
+**Title of DL project:** Interview Assistant: A Facial Emotion Detection Project
 
 **Organization :**  Entri Elevate
 
