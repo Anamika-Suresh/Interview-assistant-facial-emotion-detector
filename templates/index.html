@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Assistant: Facial Emotion Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h2>Interview Assistant: Facial Emotion Detection</h2>
+
+    <video id="video" width="400" height="300" autoplay playsinline></video>
+    <br><br>
+
+    <button onclick="capture()">Detect Emotion</button>
+
+    <div id="result">
+        <p id="emotionText">Emotion:</p>
+        <p id="feedbackText">Feedback:</p>
+    </div>
+
+    <img src="{{ url_for('static', filename='images/bg.jpg') }}"
+         alt="Emotion Detector"
+         class="bottom-image">
+
+    <script>
+        const video = document.getElementById("video");
+        const emotionText = document.getElementById("emotionText");
+        const feedbackText = document.getElementById("feedbackText");
+
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(err => {
+                console.error("Camera access error:", err);
+                emotionText.innerText = "Emotion: Error";
+                feedbackText.innerText = "Feedback: Camera access denied or unavailable.";
+            });
+
+        async function capture() {
+            const canvas = document.createElement("canvas");
+
+            // Send full webcam frame to backend
+            canvas.width = video.videoWidth || 400;
+            canvas.height = video.videoHeight || 300;
+
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            canvas.toBlob(async function(blob) {
+                const formData = new FormData();
+                formData.append("image", blob, "frame.jpg");
+
+                try {
+                    const res = await fetch("/predict", {
+                        method: "POST",
+                        body: formData
+                    });
+
+                    const data = await res.json();
+
+                    if (data.error) {
+                        emotionText.innerText = "Emotion: Error";
+                        feedbackText.innerText = "Feedback: " + data.error;
+                        return;
+                    }
+
+                    let feedback = "";
+
+                    if (data.emotion === "Happy") {
+                        feedback = "Great! You look confident and positive.";
+                    } else if (data.emotion === "Sad") {
+                        feedback = "Try to relax and keep a positive expression.";
+                    } else if (data.emotion === "Angry") {
+                        feedback = "Take a deep breath and keep your tone calm.";
+                    } else if (data.emotion === "Fear") {
+                        feedback = "Do not worry. Stay steady and confident.";
+                    } else if (data.emotion === "Surprise") {
+                        feedback = "Stay composed and maintain eye contact.";
+                    } else if (data.emotion === "Disgust") {
+                        feedback = "Try to keep a neutral and professional expression.";
+                    } else {
+                        feedback = "You look calm. Keep speaking with confidence.";
+                    }
+
+                    emotionText.innerText =
+                        "Emotion: " + data.emotion + " (" + data.confidence + "%)";
+                    feedbackText.innerText = "Feedback: " + feedback;
+
+                } catch (error) {
+                    emotionText.innerText = "Emotion: Error";
+                    feedbackText.innerText = "Feedback: Request failed.";
+                    console.error(error);
+                }
+            }, "image/jpeg");
+        }
+    </script>
+</body>
+</html>
