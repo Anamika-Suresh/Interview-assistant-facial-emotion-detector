@@ -50,6 +50,7 @@ The dataset used for this project was taken from the kaggle repository :https://
 
 ![Output 1](output1.png)
 ![Output 2](output2.png)
+![Output 3](output3.png)
 ![Output 4](output4.png)
 ![Output 5](output5.png)
 
