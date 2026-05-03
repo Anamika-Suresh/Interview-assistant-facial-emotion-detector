@@ -1,4 +1,4 @@
-# ** Interview Assistant: A Facial Emotion Detection Project**
+# **Interview Assistant: A Facial Emotion Detection Project**
 
 ## *Objective :*
 
