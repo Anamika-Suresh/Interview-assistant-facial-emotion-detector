@@ -72,7 +72,7 @@ The dataset used for this project was taken from the kaggle repository :https://
 
 **Title of DL project:** Interview Assistant: A Facial Emotion Detection Project
 
-**Organization :**  Entri Elevate
+**Organization :**  Entri Elevate.
 
 ![Output 5](certification.png)
 
